@@ -1,0 +1,225 @@
+version: '2.2'
+services:
+
+##################
+# 3 Master Nodes #
+##################
+
+  els-master-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-master-01
+    environment:
+      - node.name=els-master-01
+      - node.master=true
+      - node.data=false
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.initial_master_nodes=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - els-network
+
+  els-master-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-master-02
+    environment:
+      - node.name=els-master-02
+      - node.master=true
+      - node.data=false
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.initial_master_nodes=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - els-network
+
+  els-master-03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-master-03
+    environment:
+      - node.name=els-master-03
+      - node.master=true
+      - node.data=false
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.initial_master_nodes=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - els-network
+
+################
+# 4 Data Nodes #
+################
+
+  els-data-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-data-01
+    environment:
+      - node.name=els-data-01
+      - node.master=false
+      - node.data=true
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - els-data-01:/usr/share/elasticsearch/data
+    networks:
+      - els-network
+
+  els-data-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-data-02
+    environment:
+      - node.name=els-data-02
+      - node.master=false
+      - node.data=true
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - els-data-02:/usr/share/elasticsearch/data
+    networks:
+      - els-network
+
+  els-data-03:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-data-03
+    environment:
+      - node.name=els-data-03
+      - node.master=false
+      - node.data=true
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - els-data-03:/usr/share/elasticsearch/data
+    networks:
+      - els-network
+
+  els-data-04:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-data-04
+    environment:
+      - node.name=els-data-04
+      - node.master=false
+      - node.data=true
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - els-data-04:/usr/share/elasticsearch/data
+    networks:
+      - els-network
+
+#######################
+# 2 Coordinator Nodes #
+#######################
+
+  els-coor-01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-coor-01
+    environment:
+      - node.name=els-coor-01
+      - node.master=false
+      - node.data=false
+      - node.ingest=false
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9201:9200
+    networks:
+      - els-network
+
+  els-coor-02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.3.0
+    container_name: els-coor-02
+    environment:
+      - node.name=els-coor-02
+      - node.master=false
+      - node.data=false
+      - node.ingest=false
+      - discovery.seed_hosts=els-master-01,els-master-02,els-master-03
+      - cluster.name=els-demo-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9202:9200
+    networks:
+      - els-network
+
+#################
+# 1 Kibana Node #
+#################
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.3.0
+    container_name: kibana
+    ports:
+      - 5601:5601
+    networks:
+      - els-network
+    environment:
+      ELASTICSEARCH_HOSTS: '["http://els-coor-01:9200","http://els-coor-02:9200"]'
+
+
+#########
+# Other #
+#########
+
+volumes:
+  els-data-01:
+    driver: local
+  els-data-02:
+    driver: local
+  els-data-03:
+    driver: local
+  els-data-04:
+    driver: local
+
+networks:
+  els-network:
